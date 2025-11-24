@@ -5,6 +5,16 @@ Used Technologies
 Socket.io - for realtime communication
 React Query for API Calls
 
+Running frontend 
+```
+npm run dev
+```
+
+Running backend 
+```
+npm run dev
+```
+
 curl command to create account
 ```
 curl -X POST "http://localhost:5000/apis/users" \
