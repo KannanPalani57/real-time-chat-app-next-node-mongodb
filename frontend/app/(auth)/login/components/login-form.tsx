@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
-    import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { z } from 'zod';
 
@@ -38,7 +38,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
 
- const {
+  const {
     register,
     handleSubmit,
     formState: { errors },
@@ -48,12 +48,19 @@ export function LoginForm({
   const { isPending, mutate: loginUser } = useLoginUser({
     onError: (err: IApiError) => {
       toast.error(err.message ?? err.error ?? "Something went wrong");
-    //   router.push("/strategy");
+      //   router.push("/strategy");
     },
     onSuccess(data) {
-        console.log({ data})
-    //   toast.success("Strategy added successfully");
-    //   router.push("/strategy");
+      console.log({ data })
+      if (data.success) {
+        console.log({ token: data.accessToken })
+
+        localStorage.setItem("token", data.accessToken)
+        router.push("/")
+
+      }
+      //   toast.success("Strategy added successfully");
+      //   router.push("/strategy");
     },
   });
 
@@ -83,7 +90,7 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   {...register("email")}
-                
+
                 />
               </Field>
               <Field >

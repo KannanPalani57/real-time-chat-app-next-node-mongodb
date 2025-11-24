@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useMemo } from "react";
-import { socket } from "./use-socket-connection"; // your existing function
+import { socket } from "./use-socket-connection";
 import { Socket } from "socket.io-client";
 
 export interface IMessage {
@@ -30,7 +30,9 @@ export function useChat(username: string) {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
+    connectUser()
     socket.on("connect", () => {
+      console.log("Connecting")
       setUsers((prev) =>
         prev.map((u) => (u.self ? { ...u, connected: true } : u))
       );
@@ -67,10 +69,24 @@ export function useChat(username: string) {
     });
 
     socket.on("user connected", (user: IUser) => {
-      setUsers((prev) => [
-        ...prev,
-        { ...user, messages: [], hasNewMessages: false },
-      ]);
+      setUsers(prev => {
+        const exists = prev.some(u => u.userID === user.userID);
+
+        if (exists) {
+          // Update the existing user
+          return prev.map(u =>
+            u.userID === user.userID
+              ? { ...u, connected: true }
+              : u
+          );
+        }
+
+        // Otherwise add new user
+        return [
+          ...prev,
+          { ...user, messages: [], hasNewMessages: false, connected: true }
+        ];
+      });
     });
 
     return () => {
@@ -92,11 +108,11 @@ export function useChat(username: string) {
         prev.map((user) =>
           user.userID === from
             ? {
-                ...user,
-                messages: [...user.messages, { content, fromSelf: false }],
-                hasNewMessages: user.userID !== selectedUserId,
-              }
-            : user
+              ...user,
+              messages: [...user.messages, { content, fromSelf: false }],
+              hasNewMessages: user.userID !== selectedUserId,
+            }
+          : user
         )
       );
     });
@@ -106,7 +122,8 @@ export function useChat(username: string) {
 
   const connectUser = () => {
     if (socket) {
-      socket.auth = { username };
+      let token = localStorage.getItem("token")
+      socket.auth = { token };
       socket.connect();
       console.log("Connecting", username, socket);
       setUserSelected(true);
@@ -140,9 +157,9 @@ export function useChat(username: string) {
       prev.map((u) =>
         u.userID === selectedChatUser.userID
           ? {
-              ...u,
-              messages: [...u.messages, { content: message, fromSelf: true }],
-            }
+            ...u,
+            messages: [...u.messages, { content: message, fromSelf: true }],
+          }
           : u
       )
     );

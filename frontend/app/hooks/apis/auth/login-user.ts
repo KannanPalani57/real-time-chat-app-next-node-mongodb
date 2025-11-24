@@ -3,7 +3,8 @@ import { MutateOptions, useMutation } from "@tanstack/react-query";
 import { axios, IApiError } from "../axios-config";
 
 export type UserResults = {
-  status: boolean;
+  success: boolean;
+  accessToken: string
 };
 
 export type UserParams = {

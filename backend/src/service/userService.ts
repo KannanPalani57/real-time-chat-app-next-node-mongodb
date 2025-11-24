@@ -8,6 +8,10 @@ export function findUserById(id: string) {
   return UserModel.findById(id);
 }
 
+export async  function findAllUser() {
+  return await UserModel.find().lean()
+}
+
 export function findUserByEmail(email: string) {
   return UserModel.findOne({ email });
 }
