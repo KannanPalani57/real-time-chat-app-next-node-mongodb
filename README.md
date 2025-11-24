@@ -21,6 +21,9 @@ curl -X POST "http://localhost:5000/apis/users" \
 
 
 WIP: 
+
 Fetching user chat history and update in UI
+
 Showing user active status in chat
+
 Register API Integration in frontend
