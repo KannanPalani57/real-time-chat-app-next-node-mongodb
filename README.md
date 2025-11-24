@@ -1,6 +1,7 @@
 Real time chat application built in NextJS, NodeJS, MongoDB with TypeScript. 
 
 Used Technologies 
+
 Socket.io - for realtime communication
 React Query for API Calls
 
